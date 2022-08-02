@@ -16,23 +16,24 @@ char **allocate_Darray(char **parsedArgs, int n)
 }
 int main()
 {
-	char *inputString, **parsedArgs = NULL;
+	char *inputString;// **parsedArgs;
 	int execFlag = 0;
-	int size = 20;
+	//int size = 20;
 
-	parsedArgs = allocate_Darray(parsedArgs, 100);
+	//parsedArgs = allocate_Darray(parsedArgs, 100);
 	while (1)
 	{
 		inputString = lsh_read_line();
-		execFlag = processString(inputString, parsedArgs);
-		if (execFlag == 1)
-		{
-			execArgs(parsedArgs);
-		}
+		//execFlag = processString(inputString, parsedArgs);
+		//parsedArgs  = processString(inputString);
+		processString(inputString);
+		//if (execFlag == 1)
+	
+			//execArgs(parsedArgs);
 		if (inputString[0] != '\0')
 		{
 			free(inputString);
-			free(parsedArgs);
+			//free(parsedArgs);
 		}
 	}
 	return (0);
@@ -80,6 +81,8 @@ int execArgs(char **parsed)
 
 	if (parsed[0] == NULL)
 		return 1;
+	if (systemCommand(parsed))
+		return 0;
 	else
 		id = fork();
 	if (id == 0)
@@ -96,7 +99,7 @@ int execArgs(char **parsed)
 		return 1;
 	}
 }
-int processString(char *str, char **parsed)
+/**int processString(char *str, char **parsed)
 {
 	int i = 0;
 
@@ -109,7 +112,96 @@ int processString(char *str, char **parsed)
 	if (systemCommand(parsed))
 		return 0;
 	return (1);
+}*/
+int processString(char *str)
+{
+	char **striped;
+	int  piped = 0, i = 0;
+
+	striped = (char **)malloc(sizeof(char *) * 20);
+	piped = process_Mcmd(str, striped);
+
+	if (piped)
+	{
+		while (i < 3)
+		{
+			processSpace(striped[i]);
+			i++;
+		}
+	}
+	else
+		processSpace(str);
+
+	return 1;
 }
+int process_Mcmd(char *str, char **striped)
+{
+	char *token;
+	int bufsize = 20, position = 0;
+
+	token = strtok(str, ";");
+        while (token != NULL)
+        {
+                striped[position] = token;
+                position++;
+
+                if (position >= bufsize)
+                {
+                        bufsize += 20;
+                        striped = allocate_Darray(striped, bufsize);
+                        if (!striped)
+                        {
+                                perror("\ncould not allocate space");
+                                exit (0);
+                        }
+                }
+                token = strtok(NULL, ";");
+        }
+	striped[position] = NULL;
+	if (striped[1] == NULL)
+		return 0;
+	else
+		return 1;
+}	
+int processSpace(char *str)
+{
+	char **parsed;
+	char *token, tokens;
+	int bufsize = 20, position = 0, mulCmd = 0;
+	int bufsize2 = 20;
+
+	parsed = (char **)malloc(sizeof(char *) * bufsize);
+	if (!parsed)
+	{
+		perror("Lsh: memory allocation error");
+		exit(EXIT_FAILURE);
+	}
+
+	token = strtok(str, " ");
+
+	while (token != NULL)
+	{
+		parsed[position] = token;
+		position++;
+
+		if (position >= bufsize)
+		{
+			bufsize += 20;
+			parsed = allocate_Darray(parsed, bufsize);
+			if (!parsed)
+			{
+				perror("\ncould not allocate space");
+				exit (0);
+			}
+		}
+		token = strtok(NULL, " ");
+	}
+	parsed[position] = NULL;
+	execArgs(parsed);
+	return 1;
+}
+
+
 int systemCommand(char **parsed)
 {
 	char *sysCmd[2];
