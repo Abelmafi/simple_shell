@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -17,28 +18,23 @@ char **allocate_Darray(char **parsedArgs, int n)
 int main()
 {
 	char *inputString;// **parsedArgs;
-	int execFlag = 0;
+	//int execFlag = 0;
 	//int size = 20;
 
 	//parsedArgs = allocate_Darray(parsedArgs, 100);
 	while (1)
 	{
-		inputString = lsh_read_line();
+		inputString = read_line();
 		//execFlag = processString(inputString, parsedArgs);
 		//parsedArgs  = processString(inputString);
 		processString(inputString);
 		//if (execFlag == 1)
-	
 			//execArgs(parsedArgs);
-		if (inputString[0] != '\0')
-		{
-			free(inputString);
-			//free(parsedArgs);
-		}
+		free(inputString);
 	}
 	return (0);
 }
-char *lsh_read_line(void)
+char *read_line(void)
 {
 	int bufsize = 20, i;
 	int position = 0;
@@ -50,10 +46,10 @@ char *lsh_read_line(void)
   	{
 		perror("lsh: allocation error\n");
 		exit(EXIT_FAILURE);
- 	}
+	}
 	while (1)
 	{
-	 	i = read(0, &c, 1);
+		i = read(0, &c, 1);
 		if (c == EOF || c == '\n')
 		{
 			buffer[position] = '\0';
@@ -78,6 +74,13 @@ char *lsh_read_line(void)
 int execArgs(char **parsed)
 {
 	pid_t id;
+	char *cmd;
+	char *argVec[] = {"ls", NULL};
+	char *envVec[] = {NULL};
+	//strcpy(cmd, "/usr/bin/");
+	//strcat(cmd, parsed[0]);
+	
+	cmd = _which(parsed[0]);
 
 	if (parsed[0] == NULL)
 		return 1;
@@ -87,7 +90,7 @@ int execArgs(char **parsed)
 		id = fork();
 	if (id == 0)
 	{
-		if (execvp(parsed[0], parsed) < 0)
+		if (execve(cmd, parsed, envVec) < 0)
 		{
 			perror("\ncould not excute command..");
 		}
@@ -96,6 +99,7 @@ int execArgs(char **parsed)
 	else
 	{
 		wait(NULL);
+		free(parsed);
 		return 1;
 	}
 }
@@ -166,9 +170,8 @@ int process_Mcmd(char *str, char **striped)
 int processSpace(char *str)
 {
 	char **parsed;
-	char *token, tokens;
-	int bufsize = 20, position = 0, mulCmd = 0;
-	int bufsize2 = 20;
+	char *token;
+	int bufsize = 20, position = 0;
 
 	parsed = (char **)malloc(sizeof(char *) * bufsize);
 	if (!parsed)
@@ -178,7 +181,6 @@ int processSpace(char *str)
 	}
 
 	token = strtok(str, " ");
-
 	while (token != NULL)
 	{
 		parsed[position] = token;
@@ -200,8 +202,6 @@ int processSpace(char *str)
 	execArgs(parsed);
 	return 1;
 }
-
-
 int systemCommand(char **parsed)
 {
 	char *sysCmd[2];
@@ -224,9 +224,9 @@ int systemCommand(char **parsed)
 	switch (swhCmd)
 	{
 		case 1:
-			exit(0);
+			_exit(atoi(parsed[1]));
 		case 2:
-			chdir(parsed[1]);
+			chd(parsed);
 			return (1);
 		//case 3:
 		//	openHelp();
@@ -238,4 +238,54 @@ int systemCommand(char **parsed)
 			break;
 	}
 	return (0);
+}
+void chd(char **parsed)
+{
+	if (parsed[1] == NULL)
+		parsed[1] = "$HOME";
+	if (parsed[1] == "-");
+		parsed[1] = "..";
+	chdir(parsed[1]);
+}
+char *_which(char *cmd)
+{
+	char *path, *ptr_path, *token_path, *dir;
+	int len_dir, len_cmd, i;
+	struct stat st;
+
+	path = getenv("PATH");
+	if (path)
+	{
+		ptr_path = strdup(path);
+		len_cmd = strlen(cmd);
+		token_path = strtok(ptr_path, ":");
+		i = 0;
+		while (token_path != NULL)
+		{
+			//if (is_cdir(path, &i))
+			//	if (stat(cmd, &st) == 0)
+			//		return (cmd);
+			len_dir = strlen(token_path);
+			dir = malloc(len_dir + len_cmd + 2);
+			strcpy(dir, token_path);
+			strcat(dir, "/");
+			strcat(dir, cmd);
+			strcat(dir, "\0");
+			if (stat(dir, &st) == 0)
+			{
+				free(ptr_path);
+				return (dir);
+			}
+			free(dir);
+			token_path = strtok(NULL, ":");
+		}
+		free(ptr_path);
+		if (stat(cmd, &st) == 0)
+			return (cmd);
+		return (NULL);
+	}
+	if (cmd[0] == '/')
+		if (stat(cmd, &st) == 0)
+			return (cmd);
+	return (NULL);
 }
