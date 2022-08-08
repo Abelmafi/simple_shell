@@ -9,19 +9,29 @@ extern char **environ;
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include <sys/wait.h>
 
+typedef struct status{
+	int flg;
+} status_t;
+
 int takeInput(char *str);
-int execArgs(char **parsed);
+int execArgs(char **parsed, status_t *flag);
 /*int processString(char* str, char** parsed);*/
 int systemCommand(char **parsed);
 char *allocate_array(char *p, int n);
 char **allocate_Darray(char **parsedArgs, int n);
 int allocate(char **parsed, int n);
 char *read_line(void);
-int processString(char *str);
-int processSpace(char *str);
+int processString(char *str, status_t *flag);
+int _strchr(char *str, char c);
+int processSpace(char *str, status_t *flag);
 int process_Mcmd(char *str, char **striped);
+int process_And(char *str, char **striped);
+int process_Ored(char *str, char **striped);
+
 void chd(char **parsed);
 char *_which(char *cmd);
 char *_getenv(char *name);

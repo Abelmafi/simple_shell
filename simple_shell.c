@@ -18,13 +18,14 @@ char **allocate_Darray(char **parsedArgs, int n)
 int main()
 {
 	char *inputString;
+	status_t flag = {0};
 
 	while (1)
 	{
 		inputString = read_line();
 		/*execFlag = processString(inputString, parsedArgs);*/
 		/*parsedArgs  = processString(inputString);*/
-		processString(inputString);
+		processString(inputString, &flag);
 		/*if (execFlag == 1)*/
 			/*execArgs(parsedArgs);*/
 		free(inputString);
@@ -69,11 +70,12 @@ char *read_line(void)
 		}
 	}
 }
-int execArgs(char **parsed)
+int execArgs(char **parsed, status_t *flag)
 {
-	pid_t id;
+	pid_t pid;
 	char *cmd;
-	char *envVec[] = {NULL};
+	char *envVir[] = {NULL};
+	int wstatus;
 
 	cmd = _which(parsed[0]);
 
@@ -82,21 +84,25 @@ int execArgs(char **parsed)
 	if (systemCommand(parsed))
 		return 0;
 	else
-		id = fork();
-	if (id == 0)
+		pid = fork();
+	if (pid == -1)
+		exit (1);
+	if (pid == 0)
 	{
-		if (execve(cmd, parsed, envVec) < 0)
+		if (execve(cmd, parsed, envVir) < 0)
 		{
-			perror("\ncould not excute command..");
+			perror("\ncould not excute command");
+			exit (10);
 		}
 		exit(0);
 	}
-	else
-	{
-		wait(NULL);
-		free(parsed);
-		return 1;
-	}
+	if (waitpid(pid, &wstatus, 0) == -1)
+		exit (1);
+	if (!WIFEXITED(wstatus))
+		exit (1);	
+	 flag->flg = WEXITSTATUS(wstatus);
+	 free(parsed);
+	 return 1;
 }
 int systemCommand(char **parsed)
 {
@@ -196,23 +202,3 @@ char *_which(char *cmd)
 			return (cmd);
 	return (NULL);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
