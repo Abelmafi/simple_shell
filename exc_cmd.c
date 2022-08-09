@@ -26,6 +26,9 @@ int execArgs(char **parsed, status_t *flag)
 		flag->flg = 10;
 		return 1;
 	}
+	if (access(cmd, X_OK) < 0)
+	{	perror(cmd);
+		return (1);	}
 	pid = fork();
 	if (pid == -1)
 		exit(1);
