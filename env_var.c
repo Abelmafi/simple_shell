@@ -40,11 +40,8 @@ char *_getenv(char *name)
 
 void _setenv(char **parsed)
 {
-	if (parsed[1] == NULL || parsed[2] == NULL)
-	{
-		perror("couldnot set the environment variable");
-	}
-	setenv(parsed[1], parsed[2], 1);
+	if (setenv(parsed[1], parsed[2], 1) < 0)
+		perror(parsed[1]);
 }
 /**
  * _unsetenv - unset(delete) invironment variable.

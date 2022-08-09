@@ -24,7 +24,7 @@ int execArgs(char **parsed, status_t *flag)
 	{
 		if (execve(cmd, parsed, environ) < 0)
 		{
-			perror("\ncould not excute command");
+			perror(parsed[0]);
 			exit(10);
 		}
 		exit(0);
@@ -59,8 +59,8 @@ char *_which(char *cmd)
 		while (token_path != NULL)
 		{
 			/*if (is_cdir(path, &i))*/
-			/*      if (stat(cmd, &st) == 0)*/
-			/*              return (cmd);*/
+			if (stat(cmd, &st) == 0)
+				return (cmd);
 			len_dir = strlen(token_path);
 			dir = malloc(len_dir + len_cmd + 2);
 			strcpy(dir, token_path);
@@ -85,3 +85,8 @@ char *_which(char *cmd)
 			return (cmd);
 	return (NULL);
 }
+/*int dir_check(char *path, int *n)
+{
+	if (path[*n] == ':')
+		return (1);
+	while (path[*n] !=*/
