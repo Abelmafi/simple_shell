@@ -10,23 +10,30 @@ int execArgs(char **parsed, status_t *flag)
 {
 	pid_t pid;
 	char *cmd;
-	int wstatus;
+	int wstatus, i = 0;
 
 	if (parsed[0] == NULL)
 		return (1);
 	if (systemCommand(parsed))
 		return (0);
 	cmd = _which(parsed[0]);
+	if (cmd == NULL)
+	{
+		while (parsed[0][i])
+			i++;
+		write(2, parsed[0], i + 1); 
+		write(2, ": command not found\n", 20);
+		flag->flg = 10;
+		return 1;
+	}
 	pid = fork();
 	if (pid == -1)
 		exit(1);
 	if (pid == 0)
 	{
 		if (execve(cmd, parsed, environ) < 0)
-		{
-			perror(parsed[0]);
-			exit(10);
-		}
+		{	perror(parsed[0]);
+			exit(10);	}
 		exit(0);
 	}
 	if (waitpid(pid, &wstatus, 0) == -1)
@@ -85,8 +92,3 @@ char *_which(char *cmd)
 			return (cmd);
 	return (NULL);
 }
-/*int dir_check(char *path, int *n)
-{
-	if (path[*n] == ':')
-		return (1);
-	while (path[*n] !=*/
