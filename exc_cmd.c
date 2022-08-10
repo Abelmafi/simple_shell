@@ -62,8 +62,8 @@ char *_which(char *cmd)
 	path = _getenv("PATH");
 	if (path)
 	{
-		ptr_path = strdup(path);
-		len_cmd = strlen(cmd);
+		ptr_path = _strdup(path);
+		len_cmd = _strlen(cmd);
 		token_path = strtok(ptr_path, ":");
 		/*i = 0;*/
 		while (token_path != NULL)
@@ -71,12 +71,12 @@ char *_which(char *cmd)
 			/*if (is_cdir(path, &i))*/
 			if (stat(cmd, &st) == 0)
 				return (cmd);
-			len_dir = strlen(token_path);
+			len_dir = _strlen(token_path);
 			dir = malloc(len_dir + len_cmd + 2);
-			strcpy(dir, token_path);
-			strcat(dir, "/");
-			strcat(dir, cmd);
-			strcat(dir, "\0");
+			_strcpy(dir, token_path);
+			_strcat(dir, "/");
+			_strcat(dir, cmd);
+			_strcat(dir, "\0");
 			if (stat(dir, &st) == 0)
 			{
 				free(ptr_path);

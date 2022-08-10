@@ -49,5 +49,13 @@ void _setenv(char **parsed);
 void _printenv(char **parsed);
 void _unsetenv(char **parsed);
 void _exittt(char **parsed);
+
+/* HELPER FUNCTIONS */
+int _strcmp(const char *str1, const char *str2);
+char *_strcpy(char *dest, char *src);
+char *_strcat(char *dest, char *src);
+size_t _strlen(char *c);
+char *_strdup(char *src);
+
 #endif
 

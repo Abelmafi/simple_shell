@@ -20,7 +20,7 @@ int systemCommand(char **parsed)
 
 	for (i = 0; i < 5; i++)
 	{
-		if (strcmp(parsed[0], sysCmd[i]) == 0)
+		if (_strcmp(parsed[0], sysCmd[i]) == 0)
 		{
 			swhCmd = i + 1;
 			break;

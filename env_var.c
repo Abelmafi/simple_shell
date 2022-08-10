@@ -56,7 +56,7 @@ void _unsetenv(char **parsed)
 	i = unsetenv(parsed[1]);
 	if (i < 0)
 	{
-		perror("could not unset env variable");
+		perror(parsed[0]);
 	}
 }
 /**
