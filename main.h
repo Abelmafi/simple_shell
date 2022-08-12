@@ -32,8 +32,10 @@ typedef struct data
 	/*char **av;*/
 	/*char *inputString;*/
 	/*char **args;*/
+	char **_environ;
 	int status;
 	int counter;
+	char *pid;
 } data_shell;
 /**
  * struct status - holds excution status flag.
@@ -50,7 +52,7 @@ int get_line(char **input, size_t *size, FILE *stream);
 /*int takeInput(char *str);*/
 int execArgs(char **parsed, data_shell *dataSH);
 int processString(data_shell *dataSH, char *str);
-int systemCommand(char **parsed);
+int systemCommand(char **parsed, data_shell *dataSH);
 
 char *allocate_array(char *p, int n);
 char **allocate_Darray(char **parsedArgs, int n);
@@ -66,11 +68,13 @@ int process_And(char *str, char **striped);
 int process_Ored(char *str, char **striped);
 
 void chd(char **parsed);
-char *_which(char *cmdLine);
+char *_which(char *cmdLine, char **_environ);
 
-char *_getenv(char *name);
+/*char *_getenv(char *name);*/
+char *_getenv(const char *name, char **_environ);
 void _setenv(char **parsed);
-void _printenv(char **parsed);
+/*void _printenv(char **parsed);*/
+int _printenv(data_shell *dataSH);
 void _unsetenv(char **parsed);
 void _exittt(char **parsed);
 
@@ -80,6 +84,7 @@ char *_strcpy(char *dest, char *src);
 char *_strcat(char *dest, char *src);
 size_t _strlen(char *c);
 char *_strdup(char *src);
+char *_itoa(int i);
 
 #endif
 

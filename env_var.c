@@ -2,19 +2,19 @@
 /**
  * _getenv - search for environment variable by the name "name".
  * @name: name of env variable.
- *
+ * @_environ: env variable array.
  * Return: pointer to friest occurance of env name or null.
  */
-char *_getenv(char *name)
+char *_getenv(const char *name, char **_environ)
 {
 	int flag = 0, j, i;
 	char *ptrenv;
 
-	for (i = 0; environ[i]; i++)
+	for (i = 0; _environ[i]; i++)
 	{
-		for (j = 0; environ[i][j] != '='; j++)
+		for (j = 0; _environ[i][j] != '='; j++)
 		{
-			if (name[j] != environ[i][j])
+			if (name[j] != _environ[i][j])
 			{
 				flag = 0;
 				break;
@@ -24,7 +24,7 @@ char *_getenv(char *name)
 		}
 		if (flag == 1)
 		{
-			ptrenv = environ[i];
+			ptrenv = _environ[i];
 			return (ptrenv + j + 1);
 		}
 	}
@@ -62,23 +62,22 @@ void _unsetenv(char **parsed)
 /**
  * _printenv - print invironment variable.
  *
- * @parsed:command line argument.
- * Return: Nothing.
+ * @dataSH:command line argument struct.
+ * Return: 1 for success.
  */
 
-void _printenv(char **parsed)
+int _printenv(data_shell *dataSH)
 {
 	int i, j;
 
-	if (parsed[1] == NULL)
+	for (i = 0; dataSH->_environ[i]; i++)
 	{
-		for (i = 0; environ[i]; i++)
-		{
-			for (j = 0; environ[i][j]; j++)
-				;
-			write(1, environ[i], j + 1);
-			write(1, "\n", 2);
-		}
+		for (j = 0; dataSH->_environ[i][j]; j++)
+			;
+		write(1, dataSH->_environ[i], j);
+		write(1, "\n", 1);
 	}
+	dataSH->status = 0;
+	return (1);
 }
 

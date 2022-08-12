@@ -9,7 +9,7 @@
  */
 void set_data(data_shell *dataSH, char **av)
 {
-	/*unsigned int i;*/
+	unsigned int i;
 	(void)av;
 
 	/*dataSH->av = av;*/
@@ -17,7 +17,13 @@ void set_data(data_shell *dataSH, char **av)
 	/*dataSH->args = NULL;*/
 	dataSH->status = 0;
 	dataSH->counter = 1;
-	/*dataSH->pid = _iota(getpid());*/
+	for (i = 0; environ[i]; i++)
+		;
+	dataSH->_environ = malloc(sizeof(char *) * (i + 1));
+	for (i = 0; environ[i]; i++)
+		dataSH->_environ[i] = _strdup(environ[i]);
+	dataSH->_environ[i] = NULL;
+	dataSH->pid = _itoa(getpid());
 }
 /**
  * main - main function.

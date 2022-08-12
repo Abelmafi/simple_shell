@@ -3,11 +3,12 @@
  * systemCommand - system linux comand operator function.
  *
  * @parsed: input string array.
+ * @dataSH: data stricture.
  *
  * Return: one in success and 0 on failure.
  */
 
-int systemCommand(char **parsed)
+int systemCommand(char **parsed, data_shell *dataSH)
 {
 	char *sysCmd[5];
 	int i, swhCmd = 0;
@@ -35,7 +36,7 @@ int systemCommand(char **parsed)
 			chd(parsed);
 			return (1);
 		case 3:
-			_printenv(parsed);
+			_printenv(dataSH);
 			return (1);
 		case 4:
 			_setenv(parsed);
