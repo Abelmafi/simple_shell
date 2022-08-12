@@ -10,7 +10,7 @@ int execArgs(char **parsed, data_shell *dataSH)
 {
 	pid_t pid, wpd;
 	char *cmd;
-	int state, i = 0;
+	int state;
 	(void)wpd;
 
 	if (systemCommand(parsed, dataSH))
@@ -18,10 +18,7 @@ int execArgs(char **parsed, data_shell *dataSH)
 	cmd = _which(parsed[0], dataSH->_environ);
 	if (cmd == NULL)
 	{
-		while (parsed[0][i])
-			i++;
-		write(2, parsed[0], i + 1);
-		write(2, ": command not found\n", 20);
+		perror(dataSH->av[0]);
 		dataSH->status = 10;
 		return (1);
 	}

@@ -12,7 +12,7 @@ void set_data(data_shell *dataSH, char **av)
 	unsigned int i;
 	(void)av;
 
-	/*dataSH->av = av;*/
+	dataSH->av = av;
 	/*dataSH->inputString = NULL;*/
 	/*dataSH->args = NULL;*/
 	dataSH->status = 0;

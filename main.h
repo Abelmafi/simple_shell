@@ -21,15 +21,15 @@ extern char **environ;
 /**
  * struct data - holds program data.
  * @av: argument vectore.
- * @inputString: input string array.
- * @args: argument holding array.
  * @status: status flag.
  * @counter: excution step counter.
+ * @_environ: enviroment vector array.
+ * @pid: pid var.
  *
  */
 typedef struct data
 {
-	/*char **av;*/
+	char **av;
 	/*char *inputString;*/
 	/*char **args;*/
 	char **_environ;
@@ -37,11 +37,6 @@ typedef struct data
 	int counter;
 	char *pid;
 } data_shell;
-/**
- * struct status - holds excution status flag.
- * @flg: excution status int flag.
- *
- */
 
 void shell_loop(data_shell *dataSH);
 char *read_line(int *i);
