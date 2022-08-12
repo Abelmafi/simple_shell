@@ -4,31 +4,31 @@
  * processString - process && || and ; tags.
  *
  * @str: string input to be processed.
- * @flag: excution status identigier flag.
+ * @dataSH: excution status identigier flag.
  *
  * Return: one.
  */
-int processString(char *str, status_t *flag)
+int processString(data_shell *dataSH, char *str)
 {
 	char **striped;
-	unsigned int counter = 0;
+	unsigned int counter = 0, status;
 
-	flag->flg = 0;
+	dataSH->status = 0;
 	striped = (char **)malloc(sizeof(char *) * 100);
 	if (_strchr(str, '|'))
 	{
 		process_Ored(str, striped);
 		do {
-			processSpace(striped[counter], flag);
+			status = processSpace(striped[counter], dataSH);
 			counter++;
-		} while (striped[counter] && flag->flg == 10);
+		} while (striped[counter] && dataSH->status == 10);
 	}
 	else if (_strchr(str, '&'))
 	{
 		process_And(str, striped);
-		while (striped[counter] && flag->flg == 0)
+		while (striped[counter] && dataSH->status == 0)
 		{
-			processSpace(striped[counter], flag);
+			status = processSpace(striped[counter], dataSH);
 			counter++;
 		}
 	}
@@ -37,13 +37,15 @@ int processString(char *str, status_t *flag)
 		process_Mcmd(str, striped);
 		while (striped[counter])
 		{
-			processSpace(striped[counter], flag);
+			status = processSpace(striped[counter], dataSH);
 			counter++;
 		}
 	}
 	else
-		processSpace(str, flag);
+		status = processSpace(str, dataSH);
 	free(striped);
+	if (!status)
+		return (0);
 	return (1);
 }
 
@@ -140,11 +142,6 @@ int process_And(char *str, char **striped)
 		{
 			bufsize += 20;
 			striped = allocate_Darray(striped, bufsize);
-			if (!striped)
-			{
-				perror("\ncould not allocate space");
-				exit(0);
-			}
 		}
 		token = strtok(NULL, "&&");
 	}
@@ -157,40 +154,31 @@ int process_And(char *str, char **striped)
 /**
  * processSpace - process string accoriding to " " tag.
  * @str: input string array.
- * @flag: output string array.
+ * @dataSH: output string array.
  * Return: no of strings.
  */
-int processSpace(char *str, status_t *flag)
+int processSpace(char *str, data_shell *dataSH)
 {
 	char **parsed;
 	char *token;
-	int bufsize = 20, position = 0;
+	int pos = 0, status;
 
-	parsed = (char **)malloc(sizeof(char *) * bufsize);
-	if (!parsed)
-	{
-		perror("Lsh: memory allocation error");
-		exit(EXIT_FAILURE);
-	}
+	parsed = (char **)malloc(sizeof(char *) * BUFSIZE);
 	token = strtok(str, " ");
 	while (token != NULL)
 	{
-		parsed[position] = token;
-		position++;
-		if (position >= bufsize)
-		{
-			bufsize += 20;
-			parsed = allocate_Darray(parsed, bufsize);
-			if (!parsed)
-			{
-				perror("\ncould not allocate space");
-				exit(0);
-			}
-		}
+		parsed[pos] = token;
+		pos++;
+		if (pos >= BUFSIZE)
+			parsed = allocate_Darray(parsed, BUFSIZE + 20);
 		token = strtok(NULL, " ");
 	}
-	parsed[position] = NULL;
-	execArgs(parsed, flag);
+	parsed[pos] = NULL;
+	if (systemCommand(parsed))
+		return (1);
+	status = execArgs(parsed, dataSH);
+	if (!status)
+		return (0);
 	return (1);
 }
 

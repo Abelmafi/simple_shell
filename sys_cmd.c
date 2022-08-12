@@ -74,7 +74,7 @@ void chd(char **parsed)
 		parsed[1] = "$HOME";
 	if (strcmp(parsed[1], "-") == 0)
 		parsed[1] = "..";
-	if(chdir(parsed[1]) < 0)
+	if (chdir(parsed[1]) < 0)
 	{
 		write(1, "bash: cd: ", 10);
 		perror(parsed[1]);

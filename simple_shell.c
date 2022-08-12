@@ -1,62 +1,70 @@
 #include "main.h"
+
 /**
- * read_line - read command line arguments from standard input.
+ * set_data - set data stricture data.
+ * @dataSH: data stricture.
+ * @av: argument vectore.
  *
- * Return: string of comandlines.
+ * Return: nothing.
  */
-char *read_line(void)
+void set_data(data_shell *dataSH, char **av)
 {
-	int bufsize = 20;
-	int position = 0;
-	char *buffer = malloc(sizeof(char) * bufsize);
-	char c;
+	/*unsigned int i;*/
+	(void)av;
 
-	write(1, "\n>>", 3);
-	if (!buffer)
-	{
-		perror("lsh: allocation error\n");
-		exit(EXIT_FAILURE);
-	}
-	while (1)
-	{
-		read(0, &c, 1);
-		if (c == EOF || c == '\n')
-		{
-			buffer[position] = '\0';
-			return (buffer);
-		}
-		else
-			buffer[position] = c;
-		position++;
-		if (position >= bufsize)
-		{
-			bufsize += 20;
-			buffer = realloc(buffer, bufsize);
-			if (!buffer)
-			{
-				perror("lsh: allocation error\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-	}
+	/*dataSH->av = av;*/
+	/*dataSH->inputString = NULL;*/
+	/*dataSH->args = NULL;*/
+	dataSH->status = 0;
+	dataSH->counter = 1;
+	/*dataSH->pid = _iota(getpid());*/
 }
-
 /**
  * main - main function.
- *
+ * @ac: argument counter.
+ * @av: argument array.*
  * Return: zero on failure.
  *
  */
-int main(void)
+int main(int ac, char **av)
 {
-	char *inputString;
-	status_t flag = {0};
+	data_shell dataSH;
+	(void)ac;
 
-	while (1)
-	{
-		inputString = read_line();
-		processString(inputString, &flag);
-		free(inputString);
-	}
+	set_data(&dataSH, av);
+	shell_loop(&dataSH);
+	/*free_data(&dataSH);*/
 	return (0);
 }
+
+/**
+ * shell_loop - loop function.
+ * @dataSH: data stricture.
+ *
+ * Return: nothing.
+ */
+void shell_loop(data_shell *dataSH)
+{
+	int i = 1, index = 1;
+	char *inputString;
+
+	while (index == 1)
+	{
+		write(STDIN_FILENO, "$", 1);
+		inputString = read_line(&i);
+		if (i != -1)
+		{
+			if (inputString == NULL)
+				continue;
+			index = processString(dataSH, inputString);
+			dataSH->counter += 1;
+			free(inputString);
+		}
+		else
+		{
+			index = 0;
+			free(inputString);
+		}
+	}
+}
+
