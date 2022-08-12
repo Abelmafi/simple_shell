@@ -174,7 +174,7 @@ int processSpace(char *str, data_shell *dataSH)
 		token = strtok(NULL, " ");
 	}
 	parsed[pos] = NULL;
-	if (systemCommand(parsed))
+	if (parsed[0] == NULL)
 		return (1);
 	status = execArgs(parsed, dataSH);
 	if (!status)

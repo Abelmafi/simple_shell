@@ -12,8 +12,6 @@ int execArgs(char **parsed, data_shell *dataSH)
 	char *cmd;
 	int wstatus, i = 0;
 
-	if (parsed[0] == NULL)
-		return (1);
 	if (systemCommand(parsed))
 		return (1);
 	cmd = _which(parsed[0]);
