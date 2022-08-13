@@ -4,26 +4,23 @@
  *
  * @str: input string.
  * @c: character to be searched.
- * Return: 1 in sucess and 0 on failure.
+ * Return: char piinter and NULL on failure.
  */
-int _strchr(char *str, char c)
+char *_strchr(char *str, char c)
 {
-	int i;
+	char *isCharFind = NULL;
 
-	for (i = 0; str[i]; i++)
+	if(str != NULL)
 	{
-		if (c == '|' || c == '&')
-		{
-			if (str[i] == c && str[i + 1] == c)
-				return (1);
-		}
-		if (c == ';')
-		{
-			if (str[i] == c)
-				return (1);
-		}
+		do {
+			if (*str == c)
+			{
+				isCharFind = str;
+				break;
+			}
+		} while (*str++);
 	}
-	return (0);
+	return (isCharFind);
 }
 /**
  * _strcmp - compaire two strings.
@@ -70,13 +67,13 @@ char *_strcat(char *dest, char *src)
  *
  * Return: length of string.
  */
-size_t _strlen(char *c)
+int _strlen(char *s)
 {
-	char *e = c;
+	char *e = s;
 
 	while (*e)
 		e++;
-	return (e - c);
+	return (e - s);
 }
 /**
  * _strcpy - copy sourse string to destination string.

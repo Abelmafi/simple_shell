@@ -7,23 +7,23 @@
  *
  * Return: nothing.
  */
-void set_data(data_shell *dataSH, char **av)
+void set_data(data_shell *datash, char **av)
 {
 	unsigned int i;
 	(void)av;
 
-	dataSH->av = av;
-	dataSH->inputString = NULL;
-	dataSH->args = NULL;
-	dataSH->status = 0;
-	dataSH->counter = 1;
+	datash->av = av;
+	datash->input = NULL;
+	datash->args = NULL;
+	datash->status = 0;
+	datash->counter = 1;
 	for (i = 0; environ[i]; i++)
 		;
-	dataSH->_environ = malloc(sizeof(char *) * (i + 1));
+	datash->_environ = malloc(sizeof(char *) * (i + 1));
 	for (i = 0; environ[i]; i++)
-		dataSH->_environ[i] = _strdup(environ[i]);
-	dataSH->_environ[i] = NULL;
-	dataSH->pid = _itoa(getpid());
+		datash->_environ[i] = _strdup(environ[i]);
+	datash->_environ[i] = NULL;
+	datash->pid = _itoa(getpid());
 }
 /**
  * main - main function.
@@ -34,36 +34,83 @@ void set_data(data_shell *dataSH, char **av)
  */
 int main(int ac, char **av)
 {
-	data_shell dataSH;
+	data_shell datash;
 	(void)ac;
 
-	set_data(&dataSH, av);
-	shell_loop(&dataSH);
-	free_data(&dataSH);
-	return (0);
+	/*signal(SIGINT, get_sigint);*/
+	set_data(&datash, av);
+	shell_loop(&datash);
+	free_data(&datash);
+	if (datash.status < 0)
+		return (255);
+	return (datash.status);
+}
+/**
+ * without_comment - deletes comments from the input
+ *
+ * @in: input string
+ * Return: input without comments
+ */
+char *without_comment(char *in)
+{
+	int i, up_to;
+
+	up_to = 0;
+	for (i = 0; in[i]; i++)
+	{
+		if (in[i] == '#')
+		{
+			if (i == 0)
+			{
+				free(in);
+				return (NULL);
+			}
+
+			if (in[i - 1] == ' ' || in[i - 1] == '\t' || in[i - 1] == ';')
+				up_to = i;
+		}
+	}
+
+	if (up_to != 0)
+	{
+		in = _realloc(in, i, up_to + 1);
+		in[up_to] = '\0';
+	}
+
+	return (in);
 }
 
 /**
- * shell_loop - loop function.
- * @dataSH: data stricture.
+ * shell_loop - Loop of shell
+ * @datash: data relevant (av, input, args)
  *
- * Return: nothing.
+ * Return: no return.
  */
-void shell_loop(data_shell *dataSH)
+void shell_loop(data_shell *datash)
 {
-	int i = 1, index = 1;
+	int index, i;
 	char *inputString;
 
+	index = 1;
 	while (index == 1)
 	{
-		write(STDIN_FILENO, "$", 1);
+		write(STDIN_FILENO, "$ ", 2);
 		inputString = read_line(&i);
 		if (i != -1)
 		{
+			inputString = without_comment(inputString);
 			if (inputString == NULL)
 				continue;
-			index = processString(dataSH, inputString);
-			dataSH->counter += 1;
+
+			if (check_syntax_error(datash, inputString) == 1)
+			{
+				datash->status = 2;
+				free(inputString);
+				continue;
+			}
+			inputString = rep_var(inputString, datash);
+			index = split_commands(datash, inputString);
+			datash->counter += 1;
 			free(inputString);
 		}
 		else

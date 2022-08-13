@@ -6,7 +6,7 @@
  * @stream: opop
  * Return: input size on success and -1 on failerity.
  */
-int get_line(char **input, size_t *size, FILE *stream)
+ssize_t get_line(char **input, size_t *size, FILE *stream)
 {
 	int i;
 	static ssize_t position;
@@ -43,7 +43,7 @@ int get_line(char **input, size_t *size, FILE *stream)
 			buffer[position] = c;
 		position++;
 		if (position >= BUFSIZE)
-			buffer = realloc(buffer, position + 1);
+			buffer = _realloc(buffer, position, position + 1);
 	}
 	return (0);
 }

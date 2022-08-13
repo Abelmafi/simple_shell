@@ -103,10 +103,10 @@ r_var *add_rvar_node(r_var **head, int lvar, char *var, int lval);
 void free_rvar_list(r_var **head);
 
 /* aux_str functions */
-char *_strcat(char *dest, const char *src);
+char *_strcat(char *dest, char *src);
 char *_strcpy(char *dest, char *src);
-int _strcmp(char *s1, char *s2);
-char *_strchr(char *s, char c);
+int _strcmp(const char *str1, const char *str2);
+char *_strchr(char *str, char c);
 int _strspn(char *s, char *accept);
 
 /* aux_mem.c */
@@ -115,14 +115,14 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_reallocdp(char **ptr, unsigned int old_size, unsigned int new_size);
 
 /* aux_str2.c */
-char *_strdup(const char *s);
-int _strlen(const char *s);
+char *_strdup(char *src);
+int _strlen(char *s);
 int cmp_chars(char str[], const char *delim);
 char *_strtok(char str[], const char *delim);
 int _isdigit(const char *s);
 
 /* aux_str3.c */
-void rev_string(char *s);
+void rev_string(char *string);
 
 /* check_syntax_error.c */
 int repeated_char(char *input, int i);
@@ -136,7 +136,7 @@ char *without_comment(char *in);
 void shell_loop(data_shell *datash);
 
 /* read_line.c */
-char *read_line(int *i_eof);
+char *read_line(int *ie);
 
 /* split.c */
 char *swap_char(char *input, int bool);
@@ -152,14 +152,12 @@ char *replaced_input(r_var **head, char *input, char *new_input, int nlen);
 char *rep_var(char *input, data_shell *datash);
 
 /* get_line.c */
-void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
-ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
+void arrange_line(char **input, size_t *size, char *buffer, size_t index);
+ssize_t get_line(char **input, size_t *size, FILE *stream);
 
 /* exec_line */
 int exec_line(data_shell *datash);
-
-/* cmd_exec.c */
-int is_cdir(char *path, int *i);
+/*int is_cdir(char *path, int *i);*/
 char *_which(char *cmd, char **_environ);
 int is_executable(data_shell *datash);
 int check_error_cmd(char *dir, data_shell *datash);
@@ -169,30 +167,31 @@ int cmd_exec(data_shell *datash);
 char *_getenv(const char *name, char **_environ);
 int _env(data_shell *datash);
 
+void free_data(data_shell *datash);
 /* env2.c */
-char *copy_info(char *name, char *value);
-void set_env(char *name, char *value, data_shell *datash);
-int _setenv(data_shell *datash);
-int _unsetenv(data_shell *datash);
+/*char *copy_info(char *name, char *value);*/
+/*void set_env(char *name, char *value, data_shell *datash);*/
+/*int _setenv(data_shell *datash);*/
+/*int _unsetenv(data_shell *datash);*/
 
 /* cd.c */
-void cd_dot(data_shell *datash);
-void cd_to(data_shell *datash);
-void cd_previous(data_shell *datash);
-void cd_to_home(data_shell *datash);
+/*void cd_dot(data_shell *datash);*/
+/*void cd_to(data_shell *datash);*/
+/*void cd_previous(data_shell *datash);*/
+/*void cd_to_home(data_shell *datash);*/
 
 /* cd_shell.c */
-int cd_shell(data_shell *datash);
+/*int cd_shell(data_shell *datash);*/
 
 /* get_builtin */
 int (*get_builtin(char *cmd))(data_shell *datash);
 
 /* _exit.c */
-int exit_shell(data_shell *datash);
+/*int exit_shell(data_shell *datash);*/
 
 /* aux_stdlib.c */
 int get_len(int n);
-char *aux_itoa(int n);
+char *_itoa(int i);
 int _atoi(char *s);
 
 /* aux_error1.c */
@@ -216,19 +215,19 @@ int get_error(data_shell *datash, int eval);
 void get_sigint(int sig);
 
 /* aux_help.c */
-void aux_help_env(void);
-void aux_help_setenv(void);
-void aux_help_unsetenv(void);
-void aux_help_general(void);
-void aux_help_exit(void);
+/*void aux_help_env(void);*/
+/*void aux_help_setenv(void);*/
+/*void aux_help_unsetenv(void);*/
+/*void aux_help_general(void);*/
+/*void aux_help_exit(void);*/
 
 /* aux_help2.c */
-void aux_help(void);
-void aux_help_alias(void);
-void aux_help_cd(void);
+/*void aux_help(void);*/
+/*void aux_help_alias(void);*/
+/*void aux_help_cd(void);*/
 
 /* get_help.c */
-int get_help(data_shell *datash);
+/*int get_help(data_shell *datash);*/
 
 /*char *get_line(data_shell *dataSH, FILE *stream);*/
 /*int takeInput(char *str);*/
