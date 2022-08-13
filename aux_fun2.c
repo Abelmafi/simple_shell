@@ -64,3 +64,63 @@ char *_itoa(int i)
 	} while (i);
 	return (b);
 }
+/**
+ * _strspn - gets the length of a prefix substring.
+ * @s: initial segment.
+ * @accept: accepted bytes.
+ * Return: the number of accepted bytes.
+ */
+int _strspn(char *s, char *accept)
+{
+	int i, j, bool;
+
+	for (i = 0; *(s + i) != '\0'; i++)
+	{
+		bool = 1;
+		for (j = 0; *(accept + j) != '\0'; j++)
+		{
+			if (*(s + i) == *(accept + j))
+			{
+				bool = 0;
+				break;
+			}
+		}
+		if (bool == 1)
+			break;
+	}
+	return (i);
+}
+/**
+ * _atoi - converts a string to an integer.
+ * @s: input string.
+ * Return: integer.
+ */
+int _atoi(char *s)
+{
+	int res = 0;
+
+	for (int i = 0; str[i] != '\0'; ++i)
+	{
+		res = res * 10 + str[i] - '0';
+	}
+
+	return res;
+}
+/**
+ * rev_string - reverses a string.
+ * @s: input string.
+ * Return: no return.
+ */
+void rev_string(char *string)
+{
+	char temp;
+	int i, length;
+
+	length = _strlen(string) - 1;
+	for (i = 0; i < _strlen(string) / 2; i++)
+	{
+		temp = string[i];
+		string[i] = string[length];
+		string[length--] = temp;
+	}
+}

@@ -1,5 +1,13 @@
 #include "main.h"
-
+/**
+ * get_sigint - Handle the crtl + c call in prompt
+ * @sig: Signal handler
+ */
+void get_sigint(int sig)
+{
+	(void)sig;
+	write(STDOUT_FILENO, "\n^-^ ", 5);
+}
 /**
  * add_rvar_node - adds a variable at the end
  * of a r_var list.
