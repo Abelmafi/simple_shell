@@ -10,7 +10,7 @@ char *_strchr(char *str, char c)
 {
 	char *isCharFind = NULL;
 
-	if(str != NULL)
+	if (str != NULL)
 	{
 		do {
 			if (*str == c)
@@ -40,8 +40,7 @@ int _strcmp(const char *str1, const char *str2)
 	}
 	if (*str1 == '\0' && *str2 == '\0')
 		return (0);
-	else
-		return (1);
+	return (1);
 }
 /**
  * _strcat - cat sourse string to destination string.
@@ -63,7 +62,7 @@ char *_strcat(char *dest, char *src)
 }
 /**
  * _strlen - calculate string length.
- * @c: string input.
+ * @s: string input.
  *
  * Return: length of string.
  */

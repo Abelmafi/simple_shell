@@ -49,16 +49,16 @@ ssize_t get_line(char **input, size_t *size, FILE *stream)
 }
 /**
  * read_line - read line mid function.
- * @ie: sign index.
+ * @i: sign index.
  * Return: zero on failure.
  *
  */
-char *read_line(int *ie)
+char *read_line(int *i)
 {
 	char *input = NULL;
 	size_t bufsize = 0;
 
-	*ie = get_line(&input, &bufsize, stdin);
+	*i = get_line(&input, &bufsize, stdin);
 	return (input);
 }
 /**
@@ -72,6 +72,7 @@ char *read_line(int *ie)
  */
 void arrange_line(char **input, size_t *size, char *buffer, size_t index)
 {
+
 	if (*input == NULL || *size < index)
 	{
 		if (index > BUFSIZE)
@@ -86,4 +87,3 @@ void arrange_line(char **input, size_t *size, char *buffer, size_t index)
 		free(buffer);
 	}
 }
-

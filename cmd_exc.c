@@ -1,5 +1,4 @@
 #include "main.h"
-
 /**
  * exec_line - finds builtins and commands
  *
@@ -8,40 +7,17 @@
  */
 int exec_line(data_shell *datash)
 {
-	int (*builtin)(data_shell *datash);
+	/*int (*builtin)(data_shell *datash);*/
 
 	if (datash->args[0] == NULL)
 		return (1);
 
-	builtin = get_builtin(datash->args[0]);
-
-	if (builtin != NULL)
-		return (builtin(datash));
+	/*builtin = get_builtin(datash->args[0]);*/
+	/*if (builtin != NULL)*/
+	/*	return (builtin(datash));*/
 
 	return (cmd_exec(datash));
 }
-/**
- * is_cdir - checks ":" if is in the current directory.
- * @path: type char pointer char.
- * @i: type int pointer of index.
- * Return: 1 if the path is searchable in the cd, 0 otherwise.
- */
-int is_cdir(char *path, int *i)
-{
-	if (path[*i] == ':')
-		return (1);
-
-	while (path[*i] != ':' && path[*i])
-	{
-		*i += 1;
-	}
-
-	if (path[*i])
-		*i += 1;
-
-	return (0);
-}
-
 /**
  * _which - locates a command
  *
@@ -52,7 +28,7 @@ int is_cdir(char *path, int *i)
 char *_which(char *cmd, char **_environ)
 {
 	char *path, *ptr_path, *token_path, *dir;
-	int len_dir, len_cmd, i;
+	int len_dir, len_cmd;
 	struct stat st;
 
 	path = _getenv("PATH", _environ);
@@ -61,12 +37,10 @@ char *_which(char *cmd, char **_environ)
 		ptr_path = _strdup(path);
 		len_cmd = _strlen(cmd);
 		token_path = _strtok(ptr_path, ":");
-		i = 0;
 		while (token_path != NULL)
 		{
-			if (is_cdir(path, &i))
-				if (stat(cmd, &st) == 0)
-					return (cmd);
+			if (stat(cmd, &st) == 0)
+				return (cmd);
 			len_dir = _strlen(token_path);
 			dir = malloc(len_dir + len_cmd + 2);
 			_strcpy(dir, token_path);

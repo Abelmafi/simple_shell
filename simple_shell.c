@@ -1,49 +1,52 @@
 #include "main.h"
+/**
+ * free_data - frees data structure
+ *
+ * @datash: data structure
+ * Return: no return
+ */
+void free_data(data_shell *datash)
+{
+	unsigned int i;
+
+	for (i = 0; datash->_environ[i]; i++)
+	{
+		free(datash->_environ[i]);
+	}
+
+	free(datash->_environ);
+	free(datash->pid);
+}
 
 /**
- * set_data - set data stricture data.
- * @dataSH: data stricture.
- * @av: argument vectore.
+ * set_data - Initialize data structure
  *
- * Return: nothing.
+ * @datash: data structure
+ * @av: argument vector
+ * Return: no return
  */
 void set_data(data_shell *datash, char **av)
 {
 	unsigned int i;
-	(void)av;
 
 	datash->av = av;
 	datash->input = NULL;
 	datash->args = NULL;
 	datash->status = 0;
 	datash->counter = 1;
+
 	for (i = 0; environ[i]; i++)
 		;
+
 	datash->_environ = malloc(sizeof(char *) * (i + 1));
+
 	for (i = 0; environ[i]; i++)
+	{
 		datash->_environ[i] = _strdup(environ[i]);
+	}
+
 	datash->_environ[i] = NULL;
 	datash->pid = _itoa(getpid());
-}
-/**
- * main - main function.
- * @ac: argument counter.
- * @av: argument array.*
- * Return: zero on failure.
- *
- */
-int main(int ac, char **av)
-{
-	data_shell datash;
-	(void)ac;
-
-	/*signal(SIGINT, get_sigint);*/
-	set_data(&datash, av);
-	shell_loop(&datash);
-	free_data(&datash);
-	if (datash.status < 0)
-		return (255);
-	return (datash.status);
 }
 /**
  * without_comment - deletes comments from the input
@@ -94,21 +97,20 @@ void shell_loop(data_shell *datash)
 	index = 1;
 	while (index == 1)
 	{
-		write(STDIN_FILENO, "$ ", 2);
+		write(STDIN_FILENO, "$", 1);
 		inputString = read_line(&i);
 		if (i != -1)
 		{
 			inputString = without_comment(inputString);
 			if (inputString == NULL)
 				continue;
-
 			if (check_syntax_error(datash, inputString) == 1)
 			{
 				datash->status = 2;
 				free(inputString);
 				continue;
 			}
-			inputString = rep_var(inputString, datash);
+			/*input = rep_var(input, datash);*/
 			index = split_commands(datash, inputString);
 			datash->counter += 1;
 			free(inputString);
@@ -121,20 +123,23 @@ void shell_loop(data_shell *datash)
 	}
 }
 /**
- * free_data - frees data structure
+ * main - Entry point
  *
- * @datash: data structure
- * Return: no return
+ * @ac: argument count
+ * @av: argument vector
+ *
+ * Return: 0 on success.
  */
-void free_data(data_shell *datash)
+int main(int ac, char **av)
 {
-	unsigned int i;
+	data_shell datash;
+	(void) ac;
 
-	for (i = 0; datash->_environ[i]; i++)
-	{
-		free(datash->_environ[i]);
-	}
-
-	free(datash->_environ);
-	free(datash->pid);
+	/*signal(SIGINT, get_sigint);*/
+	set_data(&datash, av);
+	shell_loop(&datash);
+	free_data(&datash);
+	if (datash.status < 0)
+		return (255);
+	return (datash.status);
 }

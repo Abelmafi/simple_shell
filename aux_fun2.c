@@ -97,18 +97,18 @@ int _strspn(char *s, char *accept)
  */
 int _atoi(char *s)
 {
-	int res = 0;
+	int res = 0, i;
 
-	for (int i = 0; s[i] != '\0'; ++i)
+	for (i = 0; s[i] != '\0'; ++i)
 	{
 		res = res * 10 + s[i] - '0';
 	}
 
-	return res;
+	return (res);
 }
 /**
  * rev_string - reverses a string.
- * @s: input string.
+ * @string: input string.
  * Return: no return.
  */
 void rev_string(char *string)

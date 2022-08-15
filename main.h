@@ -139,7 +139,7 @@ void shell_loop(data_shell *datash);
 char *read_line(int *ie);
 
 /* split.c */
-char *swap_char(char *input, int bool);
+/*char *swap_char(char *input, int bool);*/
 void add_nodes(sep_list **head_s, line_list **head_l, char *input);
 void go_next(sep_list **list_s, line_list **list_l, data_shell *datash);
 int split_commands(data_shell *datash, char *input);
@@ -153,7 +153,7 @@ char *rep_var(char *input, data_shell *datash);
 
 /* get_line.c */
 void arrange_line(char **input, size_t *size, char *buffer, size_t index);
-ssize_t get_line(char **input, size_t *size, FILE *stream);
+ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
 
 /* exec_line */
 int exec_line(data_shell *datash);
