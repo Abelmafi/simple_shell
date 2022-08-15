@@ -93,3 +93,22 @@ int _isdigit(const char *s)
 	}
 	return (1);
 }
+/**
+ * rev_string - reverses a string.
+ * @string: input string.
+ * Return: no return.
+ */
+void rev_string(char *string)
+{
+	char temp;
+	int i, length;
+
+	length = _strlen(string) - 1;
+	for (i = 0; i < _strlen(string) / 2; i++)
+	{
+		temp = string[i];
+		string[i] = string[length];
+		string[length--] = temp;
+	}
+}
+

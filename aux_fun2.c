@@ -28,43 +28,68 @@ char *_strdup(char *src)
 	return (dup_offset);
 }
 /**
- * _itoa - convert intiger to string.
- * @i: intiger input.
- *
- * Return: converted string.
+ * get_len - Get the lenght of a number.
+ * @n: type int number.
+ * Return: Lenght of a number.
  */
-char *_itoa(int i)
+int get_len(int n)
 {
-	char const digit[] = "0123456789";
-	char *p;
-	static char *b;
-	int shifter = i, size = 0, no;
+	unsigned int n1;
+	int lenght = 1;
 
-	no = i;
-	while (no < 1)
+	if (n < 0)
 	{
-		no /= 10;
-		size++;
+		lenght++;
+		n1 = n * -1;
 	}
-	(i < 0) ? (size += 1) : (size);
-	p = (char *)malloc(sizeof(char) * size + 1);
-	b = p;
-	if (i < 0)
+	else
 	{
-		*p++ = '-';
-		i *= -1;
+		n1 = n;
 	}
+	while (n1 > 9)
+	{
+		lenght++;
+		n1 = n1 / 10;
+	}
+
+	return (lenght);
+}
+/**
+ * _itoa - function converts int to string.
+ * @n: type int number
+ * Return: String.
+ */
+char *_itoa(int n)
+{
+	unsigned int n1;
+	int lenght = get_len(n);
+	char *buffer;
+
+	buffer = malloc(sizeof(char) * (lenght + 1));
+	if (buffer == 0)
+		return (NULL);
+
+	*(buffer + lenght) = '\0';
+
+	if (n < 0)
+	{
+		n1 = n * -1;
+		buffer[0] = '-';
+	}
+	else
+	{
+		n1 = n;
+	}
+
+	lenght--;
 	do {
-		++p;
-		shifter = shifter / 10;
-	} while (shifter);
-	*p = '\0';
-	do {
-		*--p = digit[i % 10];
-		i = i / 10;
-	} while (i);
-	/*free(p);*/
-	return (b);
+		*(buffer + lenght) = (n1 % 10) + '0';
+		n1 = n1 / 10;
+		lenght--;
+	}
+	while (n1 > 0)
+		;
+	return (buffer);
 }
 /**
  * _strspn - gets the length of a prefix substring.
@@ -106,23 +131,6 @@ int _atoi(char *s)
 		res = res * 10 + s[i] - '0';
 	}
 
-	return (res);
-}
-/**
- * rev_string - reverses a string.
- * @string: input string.
- * Return: no return.
- */
-void rev_string(char *string)
-{
-	char temp;
-	int i, length;
 
-	length = _strlen(string) - 1;
-	for (i = 0; i < _strlen(string) / 2; i++)
-	{
-		temp = string[i];
-		string[i] = string[length];
-		string[length--] = temp;
-	}
+	return (res);
 }

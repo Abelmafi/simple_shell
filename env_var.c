@@ -1,83 +1,79 @@
 #include "main.h"
 /**
- * _getenv - search for environment variable by the name "name".
- * @name: name of env variable.
- * @_environ: env variable array.
- * Return: pointer to friest occurance of env name or null.
- */
-char *_getenv(const char *name, char **_environ)
-{
-	int flag = 0, j, i;
-	char *ptrenv;
-
-	for (i = 0; _environ[i]; i++)
-	{
-		for (j = 0; _environ[i][j] != '='; j++)
-		{
-			if (name[j] != _environ[i][j])
-			{
-				flag = 0;
-				break;
-			}
-			else
-				flag = 1;
-		}
-		if (flag == 1)
-		{
-			ptrenv = _environ[i];
-			return (ptrenv + j + 1);
-		}
-	}
-	return (NULL);
-}
-
-/**
- * _setenv - set invironment variable.
+ * cmp_env_name - compares env variables names
+ * with the name passed.
+ * @nenv: name of the environment variable
+ * @name: name passed
  *
- * @parsed: command line argument.
- * Return: Nothing.
+ * Return: 0 if are not equal. Another value if they are.
  */
-
-void _setenv(char **parsed)
-{
-	if (setenv(parsed[1], parsed[2], 1) < 0)
-		perror(parsed[1]);
-}
-/**
- * _unsetenv - unset(delete) invironment variable.
- *
- * @parsed: command line argument.
- * Return: Nothing.
- */
-void _unsetenv(char **parsed)
+int cmp_env_name(const char *nenv, const char *name)
 {
 	int i;
 
-	i = unsetenv(parsed[1]);
-	if (i < 0)
+	for (i = 0; nenv[i] != '='; i++)
 	{
-		perror(parsed[0]);
+		if (nenv[i] != name[i])
+		{
+			return (0);
+		}
 	}
-}
-/**
- * _printenv - print invironment variable.
- *
- * @dataSH:command line argument struct.
- * Return: 1 for success.
- */
 
-int _printenv(data_shell *dataSH)
+	return (i + 1);
+}
+
+/**
+ * _getenv - get an environment variable
+ * @name: name of the environment variable
+ * @_environ: environment variable
+ *
+ * Return: value of the environment variable if is found.
+ * In other case, returns NULL.
+ */
+char *_getenv(const char *name, char **_environ)
+{
+	char *ptr_env;
+	int i, mov;
+
+	/* Initialize ptr_env value */
+	ptr_env = NULL;
+	mov = 0;
+	/* Compare all environment variables */
+	/* environ is declared in the header file */
+	for (i = 0; _environ[i]; i++)
+	{
+		/* If name and env are equal */
+		mov = cmp_env_name(_environ[i], name);
+		if (mov)
+		{
+			ptr_env = _environ[i];
+			break;
+		}
+	}
+
+	return (ptr_env + mov);
+}
+
+/**
+ * _env - prints the evironment variables
+ *
+ * @datash: data relevant.
+ * Return: 1 on success.
+ */
+int _env(data_shell *datash)
 {
 	int i, j;
 
-	for (i = 0; dataSH->_environ[i]; i++)
+	for (i = 0; datash->_environ[i]; i++)
 	{
-		for (j = 0; dataSH->_environ[i][j]; j++)
+
+		for (j = 0; datash->_environ[i][j]; j++)
 			;
-		write(1, dataSH->_environ[i], j);
-		write(1, "\n", 1);
+
+		write(STDOUT_FILENO, datash->_environ[i], j);
+		write(STDOUT_FILENO, "\n", 1);
 	}
-	dataSH->status = 0;
+	datash->status = 0;
+
 	return (1);
 }
-

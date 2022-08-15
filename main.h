@@ -169,25 +169,25 @@ int _env(data_shell *datash);
 
 void free_data(data_shell *datash);
 /* env2.c */
-/*char *copy_info(char *name, char *value);*/
-/*void set_env(char *name, char *value, data_shell *datash);*/
-/*int _setenv(data_shell *datash);*/
-/*int _unsetenv(data_shell *datash);*/
+char *copy_info(char *name, char *value);
+void set_env(char *name, char *value, data_shell *datash);
+int _setenv(data_shell *datash);
+int _unsetenv(data_shell *datash);
 
 /* cd.c */
-/*void cd_dot(data_shell *datash);*/
-/*void cd_to(data_shell *datash);*/
-/*void cd_previous(data_shell *datash);*/
-/*void cd_to_home(data_shell *datash);*/
+void cd_dot(data_shell *datash);
+void cd_to(data_shell *datash);
+void cd_previous(data_shell *datash);
+void cd_to_home(data_shell *datash);
 
 /* cd_shell.c */
-/*int cd_shell(data_shell *datash);*/
+int cd_shell(data_shell *datash);
 
 /* get_builtin */
 int (*get_builtin(char *cmd))(data_shell *datash);
 
 /* _exit.c */
-/*int exit_shell(data_shell *datash);*/
+int exit_shell(data_shell *datash);
 
 /* aux_stdlib.c */
 int get_len(int n);
