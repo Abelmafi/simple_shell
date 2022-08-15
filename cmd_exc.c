@@ -28,7 +28,7 @@ int exec_line(data_shell *datash)
 char *_which(char *cmd, char **_environ)
 {
 	char *path, *ptr_path, *token_path, *dir;
-	int len_dir, len_cmd;
+	int len_dir, len_cmd, i;
 	struct stat st;
 
 	path = _getenv("PATH", _environ);
@@ -37,10 +37,12 @@ char *_which(char *cmd, char **_environ)
 		ptr_path = _strdup(path);
 		len_cmd = _strlen(cmd);
 		token_path = _strtok(ptr_path, ":");
+		i = 0;
 		while (token_path != NULL)
 		{
-			if (stat(cmd, &st) == 0)
-				return (cmd);
+			if (is_cdir(path, &i))
+				if (stat(cmd, &st) == 0)
+					return (cmd);
 			len_dir = _strlen(token_path);
 			dir = malloc(len_dir + len_cmd + 2);
 			_strcpy(dir, token_path);
