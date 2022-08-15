@@ -19,12 +19,13 @@ char *_strdup(char *src)
 	dup_offset = dup;
 	while (*src)
 	{
-		*dup_offset = *src;
-		dup_offset++;
+		*dup = *src;
+		dup++;
 		src++;
 	}
-	*dup_offset = '\0';
-	return (dup);
+	*dup = '\0';
+	/*free(dup);*/
+	return (dup_offset);
 }
 /**
  * _itoa - convert intiger to string.
@@ -62,6 +63,7 @@ char *_itoa(int i)
 		*--p = digit[i % 10];
 		i = i / 10;
 	} while (i);
+	/*free(p);*/
 	return (b);
 }
 /**

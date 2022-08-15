@@ -110,7 +110,7 @@ void shell_loop(data_shell *datash)
 				free(inputString);
 				continue;
 			}
-			/*input = rep_var(input, datash);*/
+			/*inputString = rep_var(inputString, datash);*/
 			index = split_commands(datash, inputString);
 			datash->counter += 1;
 			free(inputString);
